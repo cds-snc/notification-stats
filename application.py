@@ -8,9 +8,9 @@ from sqlalchemy.dialects.postgresql import UUID
 # DB conection string
 SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI", 'postgresql://postgres@localhost/notification_api')
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
-db = SQLAlchemy(app)
+application = Flask(__name__)
+application.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
+db = SQLAlchemy(application)
 
 NOTIFICATION_TYPE = ['email', 'sms']
 notification_types = db.Enum(*NOTIFICATION_TYPE, name='notification_type')
@@ -28,9 +28,9 @@ class NotificationHistory(db.Model):
     def __repr__(self):
         return '<Notification %r>' % self.id
 
-@app.route('/')
+@application.route('/')
 def hello():
     return("len: {}".format(len(NotificationHistory.query.all())))
 
 if __name__ == '__main__':
-    app.run()
+    application.run()

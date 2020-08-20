@@ -15,11 +15,11 @@ COPY . /app
 
 RUN set -ex && pip3 install -r requirements.txt
 
-RUN make generate-version-file
+# RUN make generate-version-file
 
 ENV PORT=6012
 
 ARG GIT_SHA
 ENV GIT_SHA ${GIT_SHA}
 
-CMD ["sh", "-c", "gunicorn -c gunicorn_config.py app"]
+CMD ["sh", "-c", "gunicorn -c gunicorn_config.py application"]
