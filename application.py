@@ -15,6 +15,7 @@ db = SQLAlchemy(application)
 NOTIFICATION_TYPE = ['email', 'sms']
 notification_types = db.Enum(*NOTIFICATION_TYPE, name='notification_type')
 
+
 class NotificationHistory(db.Model):
     __tablename__ = 'notifications' # history table empty locally
 
@@ -28,9 +29,14 @@ class NotificationHistory(db.Model):
     def __repr__(self):
         return '<Notification %r>' % self.id
 
+
 @application.route('/')
 def hello():
-    return("len: {}".format(len(NotificationHistory.query.all())))
+    try:
+        return("len: {}".format(len(NotificationHistory.query.all())))
+    except:
+        return("Had an error connecting to database")
+
 
 if __name__ == '__main__':
     application.run()
