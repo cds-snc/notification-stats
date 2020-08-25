@@ -60,7 +60,7 @@ source  ~/.pyenv/versions/3.6.9/bin/virtualenvwrapper.sh
 
 12. Run the service
 
-`flask run -p 6012 --host=0.0.0.0`
+`flask run -p 6015 --host=0.0.0.0`
 
 13. To test
 
