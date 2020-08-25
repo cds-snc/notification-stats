@@ -5,6 +5,7 @@ import datetime
 from dotenv import load_dotenv
 
 from flask import Flask
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import UUID
 
@@ -13,6 +14,7 @@ SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI", 'postgresql://pos
 
 application = Flask(__name__)
 application.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
+CORS(application)
 
 db = SQLAlchemy(application)
 
@@ -66,10 +68,46 @@ def hello():
     sys.stdout.flush()
 
     try:
-        return("Notifications: {} Services: {}".format(len(notifications), len(services)))
+        response = {
+            'notifications': len(notifications),
+            'services': len(services)
+        }
+        return(response)
     except:
-        return("Had an error connecting to database")
+        resp_error = {
+            'error':"Had an error connecting to database"
+        }
+        return(resp_error)
 
+
+@application.route('/live-services')
+def get_live_services():
+    live_services = Service.query.filter(Service.count_as_live == True).all()
+    print(live_services)
+    
+    try:
+        response = {
+            'live_services': len(live_services)
+        }
+        return(response)
+    except:
+        resp_error = {
+            'error':"Had an error connecting to database"
+        }
+        return(resp_error)
+
+
+# unfinished
+@application.route('/notifications-by-month')
+def get_notifications_sent_by_month():
+    month = func.date_trunc('month', NotificationHistory.sent_at)
+    notifications = NotificationHistory.query(func.sum(NotificationHistory.sent_at),extract('month', Loan_Amendment.AmendDate)).first()
+
+    notifications_by_month = {}
+
+    print(notifications)
+    
+    return("success")
 
 if __name__ == '__main__':
     application.run()
