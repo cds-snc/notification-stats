@@ -17,7 +17,7 @@ RUN set -ex && pip3 install -r requirements.txt
 
 # RUN make generate-version-file
 
-ENV PORT=6012
+ENV PORT=6015
 
 ARG GIT_SHA
 ENV GIT_SHA ${GIT_SHA}
