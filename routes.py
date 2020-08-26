@@ -77,4 +77,14 @@ def get_notifications_sent_by_month():
 # Organisation
 @application.route('/organisations')
 def get_list_of_organisations():
-    return("unfinished")
+    organisations = Organisation.query.all()
+    try:
+        response = {
+            'organisations': [organisations.name for organisations in organisations],
+        }
+        return(response)
+    except:
+        resp_error = {
+            'error':"Had an error connecting to database"
+        }
+        return(resp_error)
