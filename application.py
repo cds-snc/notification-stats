@@ -1,10 +1,12 @@
 import os
 import sys
 import datetime
+import uuid
 
 from dotenv import load_dotenv
 
 from flask import Flask
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import UUID
 
@@ -13,6 +15,7 @@ SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI", 'postgresql://pos
 
 application = Flask(__name__)
 application.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
+CORS(application)
 
 db = SQLAlchemy(application)
 
@@ -55,6 +58,24 @@ class Service(db.Model):
     def __repr__(self):
         return "<Service {} {}>".format(self.name, self.id)
 
+class Organisation(db.Model):
+    __tablename__ = "organisation"
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=False)
+    name = db.Column(db.String(255), nullable=False, unique=True, index=True)
+    active = db.Column(db.Boolean, nullable=False, default=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    updated_at = db.Column(db.DateTime, nullable=True, onupdate=datetime.datetime.utcnow)
+    agreement_signed = db.Column(db.Boolean, nullable=True)
+    agreement_signed_at = db.Column(db.DateTime, nullable=True)
+    organisation_type = db.Column(
+        db.String(255),
+        db.ForeignKey('organisation_types.name'),
+        unique=False,
+        nullable=True,
+    )
+    def __repr__(self):
+        return "<Organisation {} {}>".format(self.name, self.id)
+
 
 @application.route('/')
 def hello():
@@ -66,9 +87,71 @@ def hello():
     sys.stdout.flush()
 
     try:
-        return("Notifications: {} Services: {}".format(len(notifications), len(services)))
+        response = {
+            'notifications': len(notifications),
+            'services': len(services)
+        }
+        return(response)
     except:
-        return("Had an error connecting to database")
+        resp_error = {
+            'error':"Had an error connecting to database"
+        }
+        return(resp_error)
+
+
+@application.route('/live-services')
+def get_live_services():
+    live_services = Service.query.filter(Service.count_as_live == True).all()
+    print(live_services)
+    
+    try:
+        response = {
+            'live_services': len(live_services)
+        }
+        return(response)
+    except:
+        resp_error = {
+            'error':"Had an error connecting to database"
+        }
+        return(resp_error)
+
+
+# Notifications related routes
+@application.route('/notifications-by-type')
+def get_notifications_by_type():
+    notifications_email = NotificationHistory.query.filter(NotificationHistory.notification_type=="email").all()
+    notifications_sms = NotificationHistory.query.filter(NotificationHistory.notification_type=="sms").all()
+
+    try:
+        response = {
+            'email': len(notifications_email),
+            'sms': len(notifications_sms)
+        }
+        return(response)
+    except:
+        resp_error = {
+            'error':"Had an error connecting to database"
+        }
+        return(resp_error)
+
+
+# unfinished
+@application.route('/notifications-by-month')
+def get_notifications_sent_by_month():
+    month = func.date_trunc('month', NotificationHistory.sent_at)
+    notifications = NotificationHistory.query(func.sum(NotificationHistory.sent_at),extract('month', Loan_Amendment.AmendDate)).first()
+
+    notifications_by_month = {}
+
+    print(notifications)
+    
+    return("success")
+
+
+# Organisation
+@application.route('/organisations')
+def get_list_of_organisations():
+    return("unfinished")
 
 
 if __name__ == '__main__':

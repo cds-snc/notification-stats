@@ -10,6 +10,7 @@ fido2==0.7.0
 Flask-Bcrypt==0.7.1
 flask-marshmallow==0.11.0
 Flask-Migrate==2.5.2
+flask-cors==3.0.8
 git+https://github.com/mitsuhiko/flask-sqlalchemy.git@500e732dd1b975a56ab06a46bd1a20a21e682262#egg=Flask-SQLAlchemy==2.3.2.dev20190108
 Flask==1.1.1
 click-datetime==0.2
@@ -63,15 +64,15 @@ alembic==1.4.2
 amqp==1.4.9
 anyjson==0.3.3
 asn1crypto==1.4.0
-attrs==19.3.0
-awscli==1.18.107
-bcrypt==3.1.7
+attrs==20.1.0
+awscli==1.18.125
+bcrypt==3.2.0
 billiard==3.3.0.23
 bleach==3.1.4
 blinker==1.4
 boto==2.49.0
 boto3==1.12.13
-botocore==1.17.30
+botocore==1.17.48
 certifi==2020.6.20
 chardet==3.0.4
 click==7.1.2
@@ -101,7 +102,7 @@ pyrsistent==0.16.0
 PySocks==1.7.1
 python-dateutil==2.8.1
 python-editor==1.0.4
-python-http-client==3.2.7
+python-http-client==3.3.1
 python-json-logger==0.1.11
 pytz==2020.1
 redis==3.5.3
