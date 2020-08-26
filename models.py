@@ -1,5 +1,6 @@
 import os
 import datetime
+import uuid
 
 from dotenv import load_dotenv
 
@@ -53,3 +54,22 @@ class Service(db.Model):
 
     def __repr__(self):
         return "<Service {} {}>".format(self.name, self.id)
+
+
+class Organisation(db.Model):
+    __tablename__ = "organisation"
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=False)
+    name = db.Column(db.String(255), nullable=False, unique=True, index=True)
+    active = db.Column(db.Boolean, nullable=False, default=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    updated_at = db.Column(db.DateTime, nullable=True, onupdate=datetime.datetime.utcnow)
+    agreement_signed = db.Column(db.Boolean, nullable=True)
+    agreement_signed_at = db.Column(db.DateTime, nullable=True)
+    organisation_type = db.Column(
+        db.String(255),
+        db.ForeignKey('organisation_types.name'),
+        unique=False,
+        nullable=True,
+    )
+    def __repr__(self):
+        return "<Organisation {} {}>".format(self.name, self.id)
