@@ -49,6 +49,7 @@ class Service(db.Model):
     volume_sms = db.Column(db.Integer(), nullable=True, unique=False)
     volume_email = db.Column(db.Integer(), nullable=True, unique=False)
     count_as_live = db.Column(db.Boolean, nullable=False, default=True)
+    go_live_at = db.Column(db.DateTime, nullable=True)
     organisation_id = db.Column(UUID(as_uuid=True), db.ForeignKey('organisation.id'), index=True, nullable=True)
     # organisation = db.relationship('Organisation', backref='services')
 
