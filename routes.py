@@ -4,8 +4,6 @@ import datetime
 from flask_setup import application
 from models import NotificationHistory, Organisation, Service
 
-from sqlalchemy import func
-
 @application.route('/')
 def hello():
     services = Service.query.all()
@@ -134,4 +132,14 @@ def get_live_services_by_go_live_date(month,year):
 # Organisation
 @application.route('/organisations')
 def get_list_of_organisations():
-    return("unfinished")
+    organisations = Organisation.query.all()
+    try:
+        response = {
+            'organisations': [organisations.name for organisations in organisations],
+        }
+        return(response)
+    except:
+        resp_error = {
+            'error':"Had an error connecting to database"
+        }
+        return(resp_error)
