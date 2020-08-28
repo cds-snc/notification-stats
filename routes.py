@@ -4,6 +4,8 @@ import datetime
 from flask_setup import application
 from models import NotificationHistory, Organisation, Service
 
+from sqlalchemy import func
+
 @application.route('/')
 def hello():
     services = Service.query.all()
