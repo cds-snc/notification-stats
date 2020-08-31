@@ -1,10 +1,16 @@
 import sys
 import datetime
 
+from sqlalchemy import func
 from flask_setup import application
 from models import NotificationHistory, Organisation, Service
 
-from sqlalchemy import func
+
+## Filters and Queries
+
+def live_services_query():
+  return Service.query.filter(Service.count_as_live == True).filter(Service.restricted == False)
+
 
 @application.route('/')
 def hello():
@@ -30,9 +36,8 @@ def hello():
 
 @application.route('/live-services')
 def get_live_services():
-    live_services = Service.query.filter(Service.count_as_live == True).all()
-    
     try:
+        live_services = live_services_query().all()
         response = {
             'live_services': len(live_services)
         }
@@ -126,7 +131,7 @@ def get_notifications_by_type_and_month(month, year):
 
 
 def get_live_services_by_go_live_date(month,year):
-    services = len(Service.query.filter(func.extract('month', Service.go_live_at) == month).filter(func.extract('year', Service.go_live_at) == year).all())
+    services = len(live_services_query().filter(func.extract('month', Service.go_live_at) == month).filter(func.extract('year', Service.go_live_at) == year).all())
     # note - this also counts archived services.. do we want to filter that out?
     return services
 
