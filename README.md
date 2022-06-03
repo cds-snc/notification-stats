@@ -1,3 +1,8 @@
+# Repo archived
+
+We are no longer using nor maintaining this code so it has been archived.
+
+
 # Notification
 
 Contains:
